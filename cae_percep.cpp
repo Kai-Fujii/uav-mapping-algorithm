@@ -111,7 +111,7 @@ public:
     pointcloud_subscriber()
     : Node("pointcloud_subscriber")
     {
-        // ★初期化時に明示的にクリア
+        // 初期化時に明示的にクリア
         z_cell_global_.clear();
         cell_data_global_.clear();
         accumulated_updated_cells_.clear();
@@ -209,9 +209,8 @@ private:
     std::unique_ptr<tf2_ros::Buffer> tf_buffer_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
 
-    // ==========================================
+
     // 役割1：情報の収集（高速・高頻度）
-    // ==========================================
     void topic_callback(const sensor_msgs::msg::PointCloud2::SharedPtr msg) 
     {
         static int callback_count = 0;
@@ -352,9 +351,8 @@ private:
                             processed_points, accumulated_updated_cells_.size());
     }
 
-    // ==========================================
+
     // 役割2：地図更新（0.5秒ごとに実行）
-    // ==========================================
     void map_timer_callback()
     {
         // ★排他制御
@@ -401,7 +399,7 @@ private:
         for (int cell_id : accumulated_updated_cells_) {
             std::vector<float>& zic = z_cell_global_[cell_id];
 
-            // ★実際の点群がないセルはスキップ
+            // 実際の点群がないセルはスキップ
             if (zic.empty()) continue;
 
             std::sort(zic.begin(), zic.end());
@@ -465,7 +463,7 @@ private:
 
             for (int dx = -aisle_num; dx <= aisle_num; ++dx) {
                 for (int dy = -aisle_num; dy <= aisle_num; ++dy) {
-                    // ★平方根なしで距離チェック
+                    // 平方根なしで距離チェック
                     float dist_sq = static_cast<float>(dx * dx + dy * dy);
                     if (dist_sq > search_radius_cells_sq) continue;
 
@@ -520,7 +518,7 @@ private:
                 *it_z = 0.0f;
                 int r, g, b;
                 
-                // ★is_traversableの結果で色分け
+                // is_traversableの結果で色分け
                 if (info.is_traversable) {
                     // 通行可能 → 青
                     hsv2rgb(240.0f / 360.0f, 1.0f, 1.0f, r, g, b); 
@@ -538,12 +536,10 @@ private:
 
 
 
-    // ==========================================
     // 役割3：経路計画（1.0秒ごとに実行）
-    // ==========================================
     void plan_timer_callback()
     {
-        // ★排他制御
+        // 排他制御
         std::lock_guard<std::mutex> lock(mutex_);
 
         if (!goal_received_) return;
@@ -602,7 +598,7 @@ private:
                 path_markers.markers.push_back(line_marker);
                 
 
-                // === スタートマーカー（黄緑） ===
+                //スタートマーカー（黄緑）
                 visualization_msgs::msg::Marker start_marker;
                 start_marker.header.frame_id = gng_main_frame_id;
                 start_marker.header.stamp = this->get_clock()->now();
@@ -618,7 +614,7 @@ private:
                 start_marker.color.r = 0.5f; start_marker.color.g = 1.0f; start_marker.color.b = 0.0f; start_marker.color.a = 1.0f;  // 黄緑
                 path_markers.markers.push_back(start_marker);
 
-                // === ゴールマーカー（黄色） ===
+                // ゴールマーカー（黄色）
                 visualization_msgs::msg::Marker goal_marker;
                 goal_marker.header.frame_id = gng_main_frame_id;
                 goal_marker.header.stamp = this->get_clock()->now();
@@ -654,10 +650,10 @@ private:
               
 
 
-                // === 経路トピックの発行 ===
+                //経路トピックの発行
                 marker_pub_->publish(path_markers);
                 
-                // ★追加: nav_msgs/Path をパブリッシュ（drone_controller用）
+                // nav_msgs/Path をパブリッシュ（drone_controller用）
                 nav_msgs::msg::Path nav_path;
                 nav_path.header.frame_id = gng_main_frame_id;
                 nav_path.header.stamp = this->get_clock()->now();
