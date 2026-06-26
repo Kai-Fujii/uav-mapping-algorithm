@@ -125,5 +125,3 @@ PathResult AStarPlanner::findPath(
 
     return result;  // 経路が見つからなかった場合(FAILED)
 }
-
-//かかか
