@@ -72,7 +72,7 @@ PathResult AStarPlanner::findPath(
                 continue;
             }
 
-            // 2. ★Receding Horizon: 未知領域に到達したらサブゴールとして返す
+            // 2. Receding Horizon: 未知領域に到達したらサブゴールとして返す
             if (!cell_data.count(next_id)) {
                 // current_nodeは既知領域の最後のノード → これをサブゴールとする
                 result.status = SearchResult::REACH_HORIZON;
