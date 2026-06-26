@@ -355,45 +355,8 @@ private:
     // 役割2：地図更新（0.5秒ごとに実行）
     void map_timer_callback()
     {
-        // ★排他制御
+        // 排他制御
         std::lock_guard<std::mutex> lock(mutex_);
-
-        // if (is_drone_pose_valid_) {
-        //     int drone_xc = static_cast<int>(std::round((current_drone_x_ + MAP_SIZE_X / 2) / CELL_SIZE));
-        //     int drone_yc = static_cast<int>(std::round((current_drone_y_ + MAP_SIZE_Y / 2) / CELL_SIZE));
-            
-        //     const int radius_cells = static_cast<int>(std::ceil(OPTIMISTIC_RADIUS / CELL_SIZE));
-        //     const float radius_cells_sq = (OPTIMISTIC_RADIUS / CELL_SIZE) * (OPTIMISTIC_RADIUS / CELL_SIZE);
-            
-        //     for (int dx = -radius_cells; dx <= radius_cells; ++dx) {
-        //         for (int dy = -radius_cells; dy <= radius_cells; ++dy) {
-        //             float dist_sq = static_cast<float>(dx * dx + dy * dy);
-        //             if (dist_sq > radius_cells_sq) continue;
-                    
-        //             int nx = drone_xc + dx;
-        //             int ny = drone_yc + dy;
-        //             if (nx < 0 || nx >= CELL_NUM_X || ny < 0 || ny >= CELL_NUM_Y) continue;
-                    
-        //             int cell_id = nx * CELL_NUM_Y + ny;
-                    
-        //             // ★未観測セルのみ楽観的評価
-        //             if (!cell_data_global_.count(cell_id)) {
-        //                 CellInfo optimistic_info;
-        //                 optimistic_info.is_traversable = true;
-        //                 optimistic_info.aisle_max = current_drone_z_ + 1.0f;
-        //                 optimistic_info.aisle_min = current_drone_z_ - 1.0f;
-        //                 optimistic_info.max_diff = 2.0f;  // 十分な高さ
-        //                 optimistic_info.max_point = current_drone_z_ + 1.0f;
-        //                 optimistic_info.min_point = current_drone_z_ - 1.0f;
-        //                 cell_data_global_[cell_id] = optimistic_info;
-        //                 accumulated_updated_cells_.insert(cell_id);  // ★Loop2で処理されるように追加
-        //             }
-        //         }
-        //     }
-        // }
-
-        // if (accumulated_updated_cells_.empty()) return;
-
 
         // Loop 1
         for (int cell_id : accumulated_updated_cells_) {
